@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import { AppContext } from '../AppContext';
 import { useRef, useState, useEffect } from 'react';
 import '../App.scss';
 import axios from 'axios';
@@ -11,12 +13,7 @@ import {
 import * as config from '../config';
 
 export const PageUpload = () => {
-	const [uploadFile, setUploadFile] = useState<IUploadFile>({
-		..._initialUploadFile,
-	});
-	const [formFields, setFormFields] = useState<IFormFields>({
-		..._initialFormFields,
-	});
+	const { uploadFile, setUploadFile, formFields, setFormFields } = useContext(AppContext);
 	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
 
 	const titleField = useRef<HTMLInputElement>(null);
