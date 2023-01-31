@@ -12,18 +12,8 @@ import {
 import * as config from '../config';
 
 export const PageUpload = () => {
-	const { uploadFile, setUploadFile, formFields, setFormFields, fileItems, setFileItems, fetchFileItems, handleSubmit, handleFileChange } = useContext(AppContext);
-
+	const { uploadFile, setUploadFile, formFields, setFormFields, fileItems, setFileItems, fetchFileItems, handleSubmit, handleFileChange, handleFormFieldChange } = useContext(AppContext);
 	const titleField = useRef<HTMLInputElement>(null);
-
-	const handleFormFieldChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		fieldName: string
-	) => {
-		const value = e.target.value;
-		formFields[fieldName as keyof IFormFields] = value;
-		setFormFields({ ...formFields });
-	};
 
 	return (
 		<div className="page pageUpload">
