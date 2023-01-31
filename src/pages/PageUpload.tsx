@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { AppContext } from '../AppContext';
 import { useRef, useState, useEffect } from 'react';
 import '../App.scss';
-import axios from 'axios';
 import {
 	_initialUploadFile,
 	_initialFormFields,
@@ -13,44 +12,9 @@ import {
 import * as config from '../config';
 
 export const PageUpload = () => {
-	const { uploadFile, setUploadFile, formFields, setFormFields } = useContext(AppContext);
-	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
+	const { uploadFile, setUploadFile, formFields, setFormFields, fileItems, setFileItems, fetchFileItems, handleSubmit } = useContext(AppContext);
 
 	const titleField = useRef<HTMLInputElement>(null);
-
-	const fetchFileItems = () => {
-		(async () => {
-			setFileItems(
-				(await axios.get(`${config.backendUrl}/fileitems`)).data
-			);
-		})();
-	};
-
-	useEffect(() => {
-		fetchFileItems();
-	}, []);
-
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		if (uploadFile.file && formFields.title.trim() !== '') {
-			let formData = new FormData();
-			formData.append('file', uploadFile.file);
-			formData.append('title', formFields.title);
-			formData.append('description', formFields.description);
-			formData.append('notes', formFields.notes);
-			formData.append('fileName', uploadFile.file.name);
-			await fetch(`${config.backendUrl}/uploadfile`, {
-				method: 'POST',
-				body: formData,
-			});
-			setFormFields({ ..._initialFormFields });
-			setUploadFile({ ..._initialUploadFile });
-			fetchFileItems();
-			if (titleField.current !== null) {
-				titleField.current.focus();
-			}
-		}
-	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files !== null) {
@@ -78,7 +42,7 @@ export const PageUpload = () => {
 		<div className="page pageUpload">
 			<main>
 				<section>
-					<form id="mainForm" onSubmit={(e) => handleSubmit(e)}>
+					<form id="mainForm" onSubmit={(e) => handleSubmit(e, titleField)}>
 						<fieldset>
 							<legend>Enter file info and choose file:</legend>
 

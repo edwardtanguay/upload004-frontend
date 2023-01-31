@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { createContext } from 'react';
-import { IFormFields, IUploadFile, _initialFormFields, _initialUploadFile } from './interfaces';
+import {
+	IFileItem,
+	IFormFields,
+	IUploadFile,
+	_initialFormFields,
+	_initialUploadFile,
+} from './interfaces';
+import * as config from './config';
+import axios from 'axios';
 
 interface IAppContext {
 	appTitle: string;
@@ -8,6 +16,10 @@ interface IAppContext {
 	setUploadFile: (file: IUploadFile) => void;
 	formFields: IFormFields;
 	setFormFields: (field: IFormFields) => void;
+	fileItems: IFileItem[];
+	setFileItems: (items: IFileItem[]) => void;
+	fetchFileItems: () => void;
+	handleSubmit: (e: React.FormEvent<HTMLFormElement>, titleField: any) => void; 
 }
 
 interface IAppProvider {
@@ -23,7 +35,43 @@ export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
 	const [formFields, setFormFields] = useState<IFormFields>({
 		..._initialFormFields,
 	});
+	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
 	const appTitle = 'File Uploader';
+
+	useEffect(() => {
+		fetchFileItems();
+	}, []);
+
+	const fetchFileItems = () => {
+		(async () => {
+			setFileItems(
+				(await axios.get(`${config.backendUrl}/fileitems`)).data
+			);
+		})();
+	};
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, titleField: React.RefObject<HTMLInputElement>) => {
+		e.preventDefault();
+		if (uploadFile.file && formFields.title.trim() !== '') {
+			let formData = new FormData();
+			formData.append('file', uploadFile.file);
+			formData.append('title', formFields.title);
+			formData.append('description', formFields.description);
+			formData.append('notes', formFields.notes);
+			formData.append('fileName', uploadFile.file.name);
+			await fetch(`${config.backendUrl}/uploadfile`, {
+				method: 'POST',
+				body: formData,
+			});
+			setFormFields({ ..._initialFormFields });
+			setUploadFile({ ..._initialUploadFile });
+			fetchFileItems();
+			if (titleField.current !== null) {
+				titleField.current.focus();
+			}
+		}
+	};
+
 
 	return (
 		<AppContext.Provider
@@ -32,7 +80,11 @@ export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
 				uploadFile,
 				setUploadFile,
 				formFields,
-				setFormFields
+				setFormFields,
+				fileItems,
+				setFileItems,
+				fetchFileItems,
+				handleSubmit
 			}}
 		>
 			{children}
