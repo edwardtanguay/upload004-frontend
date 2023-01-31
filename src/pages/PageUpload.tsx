@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import '../App.scss';
 import axios from 'axios';
 import {
@@ -11,11 +11,15 @@ import {
 import * as config from '../config';
 
 export const PageUpload = () => {
-	const [uploadFile, setUploadFile] =
-		useState<IUploadFile>({ ..._initialUploadFile });
-	const [formFields, setFormFields] =
-		useState<IFormFields>({ ..._initialFormFields });
+	const [uploadFile, setUploadFile] = useState<IUploadFile>({
+		..._initialUploadFile,
+	});
+	const [formFields, setFormFields] = useState<IFormFields>({
+		..._initialFormFields,
+	});
 	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
+
+	const titleField = useRef<HTMLInputElement>(null);
 
 	const fetchFileItems = () => {
 		(async () => {
@@ -45,6 +49,9 @@ export const PageUpload = () => {
 			setFormFields({ ..._initialFormFields });
 			setUploadFile({ ..._initialUploadFile });
 			fetchFileItems();
+			if (titleField.current !== null) {
+				titleField.current.focus();
+			}
 		}
 	};
 
@@ -81,6 +88,7 @@ export const PageUpload = () => {
 							<label htmlFor="title">Title</label>
 							<input
 								type="text"
+								ref={titleField}
 								id="title"
 								autoFocus
 								value={formFields.title}
