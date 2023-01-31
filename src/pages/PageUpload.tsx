@@ -11,7 +11,7 @@ import * as config from '../config';
 
 export const PageUpload = () => {
 	const [uploadFile, setUploadFile] = useState({ ..._initialUploadFile });
-	const [formFields, setFormFields] = useState({ ..._initialFormFields });
+	const [formFields, setFormFields] = useState<IFormFields>({ ..._initialFormFields });
 	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
 
 	const fetchFileItems = () => {
