@@ -1,25 +1,29 @@
 import { useContext } from 'react';
 import { AppContext } from '../AppContext';
-import { useRef, useState, useEffect } from 'react';
+import { useRef } from 'react';
 import '../App.scss';
-import {
-	_initialUploadFile,
-	_initialFormFields,
-	IFileItem,
-	IFormFields,
-	IUploadFile,
-} from '../interfaces';
+import { _initialUploadFile, _initialFormFields } from '../interfaces';
 import * as config from '../config';
 
 export const PageUpload = () => {
-	const { uploadFile, setUploadFile, formFields, setFormFields, fileItems, setFileItems, fetchFileItems, handleSubmit, handleFileChange, handleFormFieldChange } = useContext(AppContext);
+	const {
+		uploadFile,
+		formFields,
+		fileItems,
+		handleSubmit,
+		handleFileChange,
+		handleFormFieldChange,
+	} = useContext(AppContext);
 	const titleField = useRef<HTMLInputElement>(null);
 
 	return (
 		<div className="page pageUpload">
 			<main>
 				<section>
-					<form id="mainForm" onSubmit={(e) => handleSubmit(e, titleField)}>
+					<form
+						id="mainForm"
+						onSubmit={(e) => handleSubmit(e, titleField)}
+					>
 						<fieldset>
 							<legend>Enter file info and choose file:</legend>
 
