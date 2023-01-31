@@ -65,8 +65,7 @@ export const PageUpload = () => {
 							></input>
 							<div className="buttonArea">
 								<div className="preview">
-									{uploadFile.file?.name.endsWith('.jpg') ||
-									uploadFile.file?.name.endsWith('.png') ? (
+									{['.jpg', '.png'].filter(m => uploadFile.file?.name.endsWith(m)).length > 0 ? (
 										<img
 											src={uploadFile.preview}
 											width="100"
