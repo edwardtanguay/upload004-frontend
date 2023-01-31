@@ -21,7 +21,7 @@ interface IAppContext {
 	fetchFileItems: () => void;
 	handleSubmit: (
 		e: React.FormEvent<HTMLFormElement>,
-		titleField: any
+		titleField: React.RefObject<HTMLInputElement>
 	) => void;
 	handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleFormFieldChange: (
