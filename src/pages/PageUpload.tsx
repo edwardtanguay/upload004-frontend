@@ -12,8 +12,6 @@ import * as config from '../config';
 export const PageUpload = () => {
 	const [uploadFile, setUploadFile] = useState({ ..._initialUploadFile });
 	const [formFields, setFormFields] = useState({ ..._initialFormFields });
-	// TODO: refactor status, e.g. remove?
-	const [status, setStatus] = useState('');
 	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
 
 	const fetchFileItems = () => {
@@ -40,7 +38,6 @@ export const PageUpload = () => {
 				method: 'POST',
 				body: formData,
 			});
-			if (response) setStatus(response.statusText);
 			(document.getElementById('mainForm') as any).reset();
 			setFormFields({ ..._initialFormFields });
 			setUploadFile({ ..._initialUploadFile });
@@ -50,7 +47,6 @@ export const PageUpload = () => {
 
 	const handleFileChange = (e: any) => {
 		const file = e.target.files[0];
-		setStatus('');
 		const _uploadFile = {
 			name: file.name,
 			preview: URL.createObjectURL(file),
