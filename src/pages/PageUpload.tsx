@@ -1,8 +1,31 @@
 import { useState, useEffect } from 'react';
-import './App.scss';
+import '../App.scss';
 import axios from 'axios';
 
-const backendUrl = 'http://localhost:5889';
+const backendUrl = 'http://localhost:3610';
+
+// interface IUploadFile {
+// 	file: string;
+// 	title: string;
+// 	description: string;
+// 	notes: string;
+// 	fileName: string;
+// }
+
+interface IFileItem {
+	title: string;
+	description: string;
+	notes: string;
+	fileName: string;
+	iconPathAndFileName: string;
+}
+
+interface IFormFields {
+	title: string;
+	description: string;
+	notes: string;
+}
+
 const _initialFormFields = {
 	title: '',
 	description: '',
@@ -19,7 +42,7 @@ export const PageUpload = () => {
 	const [formFields, setFormFields] = useState({ ..._initialFormFields });
 	// TODO: refactor status, e.g. remove?
 	const [status, setStatus] = useState('');
-	const [fileItems, setFileItems] = useState([]);
+	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
 
 	const fetchFileItems = () => {
 		(async () => {
@@ -31,7 +54,7 @@ export const PageUpload = () => {
 		fetchFileItems();
 	}, []);
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: any) => {
 		e.preventDefault(); // TODO: only one?
 		if (uploadFile.data && formFields.title.trim() !== '') {
 			e.preventDefault();
@@ -40,20 +63,20 @@ export const PageUpload = () => {
 			formData.append('title', formFields.title);
 			formData.append('description', formFields.description);
 			formData.append('notes', formFields.notes);
-			formData.append('fileName', uploadFile.data.name);
+			formData.append('fileName', (uploadFile.data as any).name);
 			const response = await fetch(`${backendUrl}/uploadfile`, {
 				method: 'POST',
 				body: formData
 			});
 			if (response) setStatus(response.statusText);
-			document.getElementById('mainForm').reset();
+			(document.getElementById('mainForm') as any).reset();
 			setFormFields({ ..._initialFormFields });
 			setUploadFile({ ..._initialUploadFile });
 			fetchFileItems();
 		}
 	};
 
-	const handleFileChange = (e) => {
+	const handleFileChange = (e: any) => {
 		const file = e.target.files[0];
 		setStatus('');
 		const _uploadFile = {
@@ -64,9 +87,9 @@ export const PageUpload = () => {
 		setUploadFile(_uploadFile);
 	};
 
-	const handleFormFieldChange = (e, fieldName) => {
+	const handleFormFieldChange = (e: any, fieldName: string) => {
 		const value = e.target.value;
-		formFields[fieldName] = value;
+		formFields[fieldName as keyof IFormFields] = value;
 		setFormFields({ ...formFields });
 	};
 
