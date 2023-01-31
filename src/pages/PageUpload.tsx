@@ -1,41 +1,9 @@
 import { useState, useEffect } from 'react';
 import '../App.scss';
 import axios from 'axios';
+import { _initialUploadFile, _initialFormFields, IFileItem, IFormFields } from '../interfaces';
 
 const backendUrl = 'http://localhost:3610';
-
-// interface IUploadFile {
-// 	file: string;
-// 	title: string;
-// 	description: string;
-// 	notes: string;
-// 	fileName: string;
-// }
-
-interface IFileItem {
-	title: string;
-	description: string;
-	notes: string;
-	fileName: string;
-	iconPathAndFileName: string;
-}
-
-interface IFormFields {
-	title: string;
-	description: string;
-	notes: string;
-}
-
-const _initialFormFields = {
-	title: '',
-	description: '',
-	notes: ''
-};
-const _initialUploadFile = {
-	preview: '',
-	data: '',
-	name: ''
-};
 
 export const PageUpload = () => {
 		const [uploadFile, setUploadFile] = useState({ ..._initialUploadFile });
