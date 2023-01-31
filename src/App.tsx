@@ -1,24 +1,24 @@
 import './App.scss';
 import { NavLink, Routes, Route, Navigate } from 'react-router-dom';
-import { PageWelcome } from './pages/PageWelcome';
-import { PageInfo } from './pages/PageInfo';
-import { PageAbout } from './pages/PageAbout';
+import { PageDashboard } from './pages/PageDashboard';
+import { PageUpload } from './pages/PageUpload';
 
 function App() {
 	return (
 		<div className="App">
-			<h1>Info Site</h1>
+			<h1>File Uploader</h1>
 			<nav>
-				<NavLink to="/welcome">Welcome</NavLink>
-				<NavLink to="/info">Info</NavLink>
-				<NavLink to="/about">About</NavLink>
+				<NavLink to="/dashboard">Dashboard</NavLink>
+				<NavLink to="/upload">Upload</NavLink>
 			</nav>
 
 			<Routes>
-				<Route path="/welcome" element={<PageWelcome />} />
-				<Route path="/info" element={<PageInfo />} />
-				<Route path="/about" element={<PageAbout />} />
-				<Route path="/" element={<Navigate to="/welcome" replace />} />
+				<Route path="/dashboard" element={<PageDashboard />} />
+				<Route path="/upload" element={<PageUpload />} />
+				<Route
+					path="/"
+					element={<Navigate to="/dashboard" replace />}
+				/>
 			</Routes>
 		</div>
 	);
