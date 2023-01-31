@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import '../App.scss';
 import axios from 'axios';
-import { _initialUploadFile, _initialFormFields, IFileItem, IFormFields } from '../interfaces';
-
-const backendUrl = 'http://localhost:3610';
+import {
+	_initialUploadFile,
+	_initialFormFields,
+	IFileItem,
+	IFormFields,
+} from '../interfaces';
+import * as config from '../config';
 
 export const PageUpload = () => {
-		const [uploadFile, setUploadFile] = useState({ ..._initialUploadFile });
+	const [uploadFile, setUploadFile] = useState({ ..._initialUploadFile });
 	const [formFields, setFormFields] = useState({ ..._initialFormFields });
 	// TODO: refactor status, e.g. remove?
 	const [status, setStatus] = useState('');
@@ -14,7 +18,7 @@ export const PageUpload = () => {
 
 	const fetchFileItems = () => {
 		(async () => {
-			setFileItems((await axios.get(`${backendUrl}/fileitems`)).data);
+			setFileItems((await axios.get(`${config.backendUrl}/fileitems`)).data);
 		})();
 	};
 
@@ -32,9 +36,9 @@ export const PageUpload = () => {
 			formData.append('description', formFields.description);
 			formData.append('notes', formFields.notes);
 			formData.append('fileName', (uploadFile.data as any).name);
-			const response = await fetch(`${backendUrl}/uploadfile`, {
+			const response = await fetch(`${config.backendUrl}/uploadfile`, {
 				method: 'POST',
-				body: formData
+				body: formData,
 			});
 			if (response) setStatus(response.statusText);
 			(document.getElementById('mainForm') as any).reset();
@@ -50,7 +54,7 @@ export const PageUpload = () => {
 		const _uploadFile = {
 			name: file.name,
 			preview: URL.createObjectURL(file),
-			data: e.target.files[0]
+			data: e.target.files[0],
 		};
 		setUploadFile(_uploadFile);
 	};
@@ -138,7 +142,7 @@ export const PageUpload = () => {
 						return (
 							<div className="fileItem" key={i}>
 								<img
-									src={`${backendUrl}/${fileItem.iconPathAndFileName}`}
+									src={`${config.backendUrl}/${fileItem.iconPathAndFileName}`}
 								/>
 								<div className="info">
 									<div className="title">
@@ -153,7 +157,7 @@ export const PageUpload = () => {
 									<div className="fileName">
 										<a
 											target="_blank"
-											href={`${backendUrl}/uploadedFiles/${fileItem.fileName}`}
+											href={`${config.backendUrl}/uploadedFiles/${fileItem.fileName}`}
 										>
 											{fileItem.fileName}
 										</a>
