@@ -25,9 +25,8 @@ export const PageUpload = () => {
 	}, []);
 
 	const handleSubmit = async (e: any) => {
-		e.preventDefault(); // TODO: only one?
+		e.preventDefault();
 		if (uploadFile.data && formFields.title.trim() !== '') {
-			e.preventDefault();
 			let formData = new FormData();
 			formData.append('file', uploadFile.data);
 			formData.append('title', formFields.title);
