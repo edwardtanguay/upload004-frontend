@@ -12,22 +12,9 @@ import {
 import * as config from '../config';
 
 export const PageUpload = () => {
-	const { uploadFile, setUploadFile, formFields, setFormFields, fileItems, setFileItems, fetchFileItems, handleSubmit } = useContext(AppContext);
+	const { uploadFile, setUploadFile, formFields, setFormFields, fileItems, setFileItems, fetchFileItems, handleSubmit, handleFileChange } = useContext(AppContext);
 
 	const titleField = useRef<HTMLInputElement>(null);
-
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (e.target.files !== null) {
-			const file = e.target.files[0];
-			const _uploadFile = {
-				file,
-				preview: URL.createObjectURL(file),
-			};
-			setUploadFile(_uploadFile);
-		} else {
-			console.log('ERROR: files is null');
-		}
-	};
 
 	const handleFormFieldChange = (
 		e: React.ChangeEvent<HTMLInputElement>,

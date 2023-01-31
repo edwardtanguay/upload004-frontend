@@ -19,7 +19,11 @@ interface IAppContext {
 	fileItems: IFileItem[];
 	setFileItems: (items: IFileItem[]) => void;
 	fetchFileItems: () => void;
-	handleSubmit: (e: React.FormEvent<HTMLFormElement>, titleField: any) => void; 
+	handleSubmit: (
+		e: React.FormEvent<HTMLFormElement>,
+		titleField: any
+	) => void;
+	handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface IAppProvider {
@@ -50,7 +54,10 @@ export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
 		})();
 	};
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, titleField: React.RefObject<HTMLInputElement>) => {
+	const handleSubmit = async (
+		e: React.FormEvent<HTMLFormElement>,
+		titleField: React.RefObject<HTMLInputElement>
+	) => {
 		e.preventDefault();
 		if (uploadFile.file && formFields.title.trim() !== '') {
 			let formData = new FormData();
@@ -72,6 +79,18 @@ export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
 		}
 	};
 
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files !== null) {
+			const file = e.target.files[0];
+			const _uploadFile = {
+				file,
+				preview: URL.createObjectURL(file),
+			};
+			setUploadFile(_uploadFile);
+		} else {
+			console.log('ERROR: files is null');
+		}
+	};
 
 	return (
 		<AppContext.Provider
@@ -84,7 +103,8 @@ export const AppProvider: React.FC<IAppProvider> = ({ children }) => {
 				fileItems,
 				setFileItems,
 				fetchFileItems,
-				handleSubmit
+				handleSubmit,
+				handleFileChange,
 			}}
 		>
 			{children}
