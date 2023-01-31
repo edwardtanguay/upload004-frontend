@@ -12,14 +12,17 @@ export interface IFormFields {
 	notes: string;
 }
 
+export interface IUploadFile {
+	file: File | null;
+	preview: string;
+}
+
 export const _initialFormFields = {
 	title: '',
 	description: '',
 	notes: ''
 };
-export const _initialUploadFile = {
+export const _initialUploadFile: IUploadFile = {
 	preview: '',
-	data: '',
-	name: ''
+	file: null
 };
-

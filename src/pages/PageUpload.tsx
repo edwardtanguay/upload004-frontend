@@ -6,17 +6,22 @@ import {
 	_initialFormFields,
 	IFileItem,
 	IFormFields,
+	IUploadFile,
 } from '../interfaces';
 import * as config from '../config';
 
 export const PageUpload = () => {
-	const [uploadFile, setUploadFile] = useState({ ..._initialUploadFile });
-	const [formFields, setFormFields] = useState<IFormFields>({ ..._initialFormFields });
+	const [uploadFile, setUploadFile] =
+		useState<IUploadFile>({ ..._initialUploadFile });
+	const [formFields, setFormFields] =
+		useState<IFormFields>({ ..._initialFormFields });
 	const [fileItems, setFileItems] = useState<IFileItem[]>([]);
 
 	const fetchFileItems = () => {
 		(async () => {
-			setFileItems((await axios.get(`${config.backendUrl}/fileitems`)).data);
+			setFileItems(
+				(await axios.get(`${config.backendUrl}/fileitems`)).data
+			);
 		})();
 	};
 
@@ -24,37 +29,42 @@ export const PageUpload = () => {
 		fetchFileItems();
 	}, []);
 
-	const handleSubmit = async (e: any) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (uploadFile.data && formFields.title.trim() !== '') {
+		if (uploadFile.file && formFields.title.trim() !== '') {
 			let formData = new FormData();
-			formData.append('file', uploadFile.data);
+			formData.append('file', uploadFile.file);
 			formData.append('title', formFields.title);
 			formData.append('description', formFields.description);
 			formData.append('notes', formFields.notes);
-			formData.append('fileName', (uploadFile.data as any).name);
-			const response = await fetch(`${config.backendUrl}/uploadfile`, {
+			formData.append('fileName', uploadFile.file.name);
+			await fetch(`${config.backendUrl}/uploadfile`, {
 				method: 'POST',
 				body: formData,
 			});
-			(document.getElementById('mainForm') as any).reset();
 			setFormFields({ ..._initialFormFields });
 			setUploadFile({ ..._initialUploadFile });
 			fetchFileItems();
 		}
 	};
 
-	const handleFileChange = (e: any) => {
-		const file = e.target.files[0];
-		const _uploadFile = {
-			name: file.name,
-			preview: URL.createObjectURL(file),
-			data: e.target.files[0],
-		};
-		setUploadFile(_uploadFile);
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files !== null) {
+			const file = e.target.files[0];
+			const _uploadFile = {
+				file,
+				preview: URL.createObjectURL(file),
+			};
+			setUploadFile(_uploadFile);
+		} else {
+			console.log('ERROR: files is null');
+		}
 	};
 
-	const handleFormFieldChange = (e: any, fieldName: string) => {
+	const handleFormFieldChange = (
+		e: React.ChangeEvent<HTMLInputElement>,
+		fieldName: string
+	) => {
 		const value = e.target.value;
 		formFields[fieldName as keyof IFormFields] = value;
 		setFormFields({ ...formFields });
@@ -64,7 +74,7 @@ export const PageUpload = () => {
 		<div className="page pageUpload">
 			<main>
 				<section>
-					<form id="mainForm" onSubmit={handleSubmit}>
+					<form id="mainForm" onSubmit={(e) => handleSubmit(e)}>
 						<fieldset>
 							<legend>Enter file info and choose file:</legend>
 
@@ -101,12 +111,12 @@ export const PageUpload = () => {
 							<label>File to upload</label>
 							<input
 								type="file"
-								onChange={handleFileChange}
+								onChange={(e) => handleFileChange(e)}
 							></input>
 							<div className="buttonArea">
 								<div className="preview">
-									{uploadFile.name.endsWith('.jpg') ||
-									uploadFile.name.endsWith('.png') ? (
+									{uploadFile.file?.name.endsWith('.jpg') ||
+									uploadFile.file?.name.endsWith('.png') ? (
 										<img
 											src={uploadFile.preview}
 											width="100"
@@ -114,7 +124,7 @@ export const PageUpload = () => {
 										/>
 									) : (
 										<div className="previewFileName">
-											{uploadFile.name}
+											{uploadFile.file?.name}
 										</div>
 									)}
 								</div>
